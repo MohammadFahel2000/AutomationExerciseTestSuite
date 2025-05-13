@@ -24,7 +24,6 @@
 #          name: allure-report
 #          path: target/site/allure-maven-plugin/
 
-
 name: CI/CD Pipeline
 on:
   push:
@@ -57,10 +56,6 @@ jobs:
           unzip chromedriver.zip
           chmod +x chromedriver
           sudo mv chromedriver /usr/local/bin/
-      - name: Debug Chrome and ChromeDriver
-        run: |
-          google-chrome-stable --version
-          chromedriver --version || echo "ChromeDriver not found"
       - name: Build and Test
         run: mvn clean test -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
       - name: Generate Allure Report
