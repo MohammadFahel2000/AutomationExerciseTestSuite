@@ -13,7 +13,7 @@ import utils.GenerateEmails;
 import java.util.Map;
 
 @Listeners(TestListener.class)
-public class TestCase1_RegisterUser extends BaseTest {
+public class TestCase1RegisterUser extends BaseTest {
     
     // Annotations:
     @Epic("Automation Exercise")
@@ -22,16 +22,10 @@ public class TestCase1_RegisterUser extends BaseTest {
     @Description("Verify that user is registered then deleted.")
     @Test(description = "Test Case 1: Register User")
     public void testRegisterAndDeleteUser() {
-        /*
- TODO: The below statement is to test the Jira integration:
-        Assert.assertTrue(false, "Intentionally failing this test");
-*/
         driver.get("https://automationexercise.com/");
-
 
         // 1. Read test data from Excel
         Map<String, String> data = ExcelReader.getRowData();
-
 
         // 2. Extract variables
         Assert.assertNotNull(data);

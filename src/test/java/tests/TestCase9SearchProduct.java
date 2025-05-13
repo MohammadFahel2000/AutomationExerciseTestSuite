@@ -11,7 +11,7 @@ import pages.ProductsPage;
 import pages.SearchResultsPage;
 
 @Listeners(TestListener.class)
-public class TestCase9_SearchProduct extends BaseTest {
+public class TestCase9SearchProduct extends BaseTest {
 
     // Annotations:
     @Epic("Automation Exercise")
@@ -21,7 +21,6 @@ public class TestCase9_SearchProduct extends BaseTest {
     @Test(description = "Test Case 9: Search Product")
     public void searchProductTest() {
         driver.get("https://automationexercise.com/");
-        // TODO: implement actual logout steps
 
         HomePage homePage = new HomePage(driver);
         ProductsPage productsPage = new ProductsPage(driver);
@@ -34,8 +33,10 @@ public class TestCase9_SearchProduct extends BaseTest {
 
         productsPage.searchForProduct("Tshirt");
 
+        // to make the case failed for testing purpose
         Assert.assertTrue(false, "Intentionally failing this test");
 
+        // If the above line uncommented, the below lines will be skipped
         Assert.assertTrue(resultsPage.isSearchHeaderVisible(), "Search header not visible");
         Assert.assertTrue(resultsPage.areSearchResultsVisible(), "No search results displayed");
     }

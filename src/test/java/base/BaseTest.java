@@ -24,11 +24,8 @@ public class BaseTest {
     @AfterMethod
     public void tearDown(ITestResult result) {
         if (driver != null) {
-            // Close browser ONLY if the test passed
-//            if (result.getStatus() == ITestResult.SUCCESS) {
-//                driver.quitDriver();
-//            }
-            // Leave browser open if the test failed
+            // I need the browser to be opened for all cases:
+//          driver.quitDriver();
         }
     }
 }
