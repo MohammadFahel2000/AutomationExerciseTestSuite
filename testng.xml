@@ -11,9 +11,9 @@
 
     <test name="RegressionTests">
         <classes>
-            <class name="tests.TestCase1_RegisterUser"/>
-            <class name="tests.TestCase6_ContactUsForm"/>
-            <class name="tests.TestCase9_SearchProduct"/>
+            <class name="tests.TestCase1RegisterUser"/>
+            <class name="tests.TestCase6ContactUsForm"/>
+            <class name="tests.TestCase9SearchProduct"/>
         </classes>
     </test>
 </suite>
