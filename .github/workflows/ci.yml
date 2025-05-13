@@ -41,8 +41,24 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+      - name: Install Chrome and ChromeDriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          wget -N http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          chmod +x chromedriver
+          sudo mv -f chromedriver /usr/local/bin/chromedriver
       - name: Build and Test
-        run: mvn clean test
+        run: mvn clean test -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
       - name: Generate Allure Report
         run: mvn allure:report
       - name: Publish Allure Report
@@ -54,6 +70,12 @@ jobs:
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_PAT }}  # Use PAT instead of GITHUB_TOKEN
+          github_token: ${{ secrets.GH_PAT }}
           publish_dir: target/site/allure-maven-plugin
           publish_branch: gh-pages
+      - name: Debug Test Output
+        run: |
+          echo "Surefire Reports:"
+          cat target/surefire-reports/*.txt || true
+          echo "Allure Results Count:"
+          ls -l allure-results/ | grep json | wc -l || true
