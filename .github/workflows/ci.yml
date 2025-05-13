@@ -23,6 +23,8 @@
 #        with:
 #          name: allure-report
 #          path: target/site/allure-maven-plugin/
+
+
 name: CI/CD Pipeline
 on:
   push:
@@ -49,15 +51,16 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
-          CHROME_VERSION=$(google-chrome-stable --version | grep -oP '\d+\.\d+\.\d+')
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget -q -O chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          unzip chromedriver.zip
+          CHROME_VERSION=$(google-chrome-stable --version --no-sandbox | grep -oP '\d+\.\d+\.\d+' || echo "136.0.7103")
+          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION || echo "136.0.7103.59")
+          wget -q -O chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip || { echo "Failed to download ChromeDriver"; exit 1; }
+          unzip chromedriver.zip || { echo "Failed to unzip ChromeDriver"; exit 1; }
           chmod +x chromedriver
           sudo mv chromedriver /usr/local/bin/
+        shell: /usr/bin/bash {0}  # Remove -e to prevent premature exit
       - name: Debug Chrome and ChromeDriver
         run: |
-          google-chrome-stable --version
+          google-chrome-stable --version --no-sandbox || echo "Chrome version check failed"
           chromedriver --version || echo "ChromeDriver not found"
       - name: Build and Test
         run: mvn clean test -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
