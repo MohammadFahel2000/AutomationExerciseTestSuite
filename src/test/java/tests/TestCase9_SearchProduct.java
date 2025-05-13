@@ -34,7 +34,7 @@ public class TestCase9_SearchProduct extends BaseTest {
 
         productsPage.searchForProduct("Tshirt");
 
-//        Assert.assertTrue(false, "Intentionally failing this test");
+        Assert.assertTrue(false, "Intentionally failing this test");
 
         Assert.assertTrue(resultsPage.isSearchHeaderVisible(), "Search header not visible");
         Assert.assertTrue(resultsPage.areSearchResultsVisible(), "No search results displayed");
