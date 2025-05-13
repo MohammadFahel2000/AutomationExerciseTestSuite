@@ -32,7 +32,7 @@ public class TestCase6_ContactUsForm extends BaseTest {
         contactUsPage.fillContactForm("MohammadFahel", "m.f123@jodayn.com", "automation project", "test test");
         contactUsPage.uploadFile("src/test/resources/testdata/testUploadImg.png");
         contactUsPage.submitForm();
-        Assert.assertTrue(false, "Intentionally failing this test");
+//        Assert.assertTrue(false, "Intentionally failing this test");
 
         Assert.assertTrue(contactUsPage.isSuccessMessageVisible(), "Success message isn't visible");
         contactUsPage.clickHome();
