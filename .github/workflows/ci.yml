@@ -51,12 +51,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget -N http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
+          CHROME_VERSION=$(google-chrome-stable --version | grep -oP '\d+\.\d+\.\d+')
+          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          wget -q -O chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          unzip chromedriver.zip
           chmod +x chromedriver
-          sudo mv -f chromedriver /usr/local/bin/chromedriver
+          sudo mv chromedriver /usr/local/bin/
       - name: Build and Test
         run: mvn clean test -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
       - name: Generate Allure Report
@@ -72,10 +72,4 @@ jobs:
         with:
           github_token: ${{ secrets.GH_PAT }}
           publish_dir: target/site/allure-maven-plugin
-          publish_branch: gh-pages
-      - name: Debug Test Output
-        run: |
-          echo "Surefire Reports:"
-          cat target/surefire-reports/*.txt || true
-          echo "Allure Results Count:"
-          ls -l allure-results/ | grep json | wc -l || true
+          publish_branch: gh-pagests/ | grep json | wc -l || true
