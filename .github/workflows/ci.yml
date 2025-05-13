@@ -8,8 +8,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CI: "true"
     steps:
       - uses: actions/checkout@v4
+
+      - name: Nuclear Cleanup
+        run: |
+          mvn clean
+          rm -rf allure-results target/surefire-reports || true
 
       - name: Set up Chrome
         run: |
@@ -23,16 +30,31 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Build and Test
+      - name: Build and Test with Diagnostics
         run: |
-          mvn clean test -Dchrome.options.args="--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/chrome_profile"
+          mvn test -B -e -X \
+            -Dchrome.options.args="--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/chrome_profile"
+          echo "=== TestNG XML Verification ==="
+          cat testng.xml
+          echo "=== Surefire Reports ==="
+          ls -la target/surefire-reports/
 
-      - name: Generate Allure Report
-        run: mvn allure:report
+      - name: Generate Clean Allure Report
+        run: |
+          mvn allure:report -Dallure.results.directory=target/fresh-results
 
-      - name: Publish Allure Report
+      - name: Publish Allure Artifact
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: target/site/allure-maven-plugin/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+          publish_dir: target/site/allure-maven-plugin
+          publish_branch: gh-pages
+          force_orphan: true
